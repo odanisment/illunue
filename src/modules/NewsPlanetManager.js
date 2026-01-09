@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-const API_KEY = '9aacb4113ed0c8a45c324a35016ac78c';
+const API_KEY = 'e7a83dca2ef00da6e83e59187f7aad5e';
 const MAX_NEWS = 30;
 const UPDATE_INTERVAL = 60000;
 
