@@ -1,21 +1,24 @@
 import * as THREE from 'three';
 
-// 🚀 YENİ: Cloudflare Worker API
+// 🚀 Cloudflare Worker API
 const NEWS_API_URL = 'https://illunue-news-api.osman-danisment.workers.dev';
-const MAX_NEWS = 40;  // 30'dan 40'a çıktı (daha fazla çeşit)
+const MAX_NEWS = 50;  // 40'tan 50'ye çıktı (daha fazla çeşit)
 const UPDATE_INTERVAL = 60000;
 
-// 🎨 KATEGORİ RENK KODLARI (Gen-Z vibe)
+// 🎨 12 KATEGORİ RENK KODLARI (Genişletilmiş)
 const CATEGORY_COLORS = {
-  gaming: 0xff1744,      // 🎮 Kırmızı - Discord/Gamer
-  crypto: 0xf7931a,      // ₿ Bitcoin turuncu
-  ai: 0x7c4dff,          // 🤖 Mor - Futuristik
-  fintech: 0x00e676,     // 💰 Yeşil - Para
-  esports: 0xffd700,     // 🏆 Altın
-  space: 0x4a90e2,       // 🚀 Mavi - Uzay
-  community: 0x7289da,   // 💬 Discord mavisi
-  popculture: 0xff6090,  // 🎬 Pembe
-  tech: 0x00bcd4         // 💻 Cyan - Default
+  gaming: 0xff1744,        // 🎮 Kırmızı - Oyun konsolu
+  esports: 0xffd700,       // 🏆 Altın - Şampiyonluk
+  crypto: 0xf7931a,        // ₿ Bitcoin turuncu
+  web3: 0x8b00ff,          // 🌐 Mor - Metaverse
+  ai: 0x7c4dff,            // 🤖 Açık mor - Futuristik AI
+  fintech: 0x00e676,       // 💰 Yeşil - Para
+  space: 0x4a90e2,         // 🚀 Mavi - Uzay
+  tech: 0x00bcd4,          // ⚡ Cyan - Teknoloji
+  mobile: 0xff9800,        // 📱 Turuncu - Mobil cihazlar
+  entertainment: 0xff6090, // 🎬 Pembe - Film/dizi
+  music: 0xe91e63,         // 🎵 Koyu pembe - Müzik
+  coding: 0x4caf50         // 💻 Yeşil - Kod/GitHub
 };
 
 export class NewsPlanetManager {
@@ -75,7 +78,7 @@ export class NewsPlanetManager {
       const color = new THREE.Color(categoryColor);
       const material = new THREE.MeshStandardMaterial({
         color: color,
-        emissive: color.clone().multiplyScalar(0.4), // Daha parlak emissive
+        emissive: color.clone().multiplyScalar(0.4),
         roughness: 0.4,
         metalness: 0.3,
         transparent: true,
@@ -105,7 +108,7 @@ export class NewsPlanetManager {
         url: article.url,
         title: article.title,
         description: article.description || 'No summary available',
-        category: article.category,  // 🎯 Kategori bilgisi
+        category: article.category,
         fadeState: 'in',
         fadeProgress: 0,
         targetOpacity: 1,
@@ -139,18 +142,18 @@ export class NewsPlanetManager {
   _createTooltip() {
     const el = document.createElement('div');
     el.style.position = 'absolute';
-    el.style.background = 'rgba(0, 0, 0, 0.9)'; // Daha koyu (daha modern)
+    el.style.background = 'rgba(0, 0, 0, 0.9)';
     el.style.color = '#fff';
-    el.style.padding = '12px 16px'; // Daha geniş padding
+    el.style.padding = '12px 16px';
     el.style.borderRadius = '8px';
     el.style.pointerEvents = 'none';
     el.style.display = 'none';
-    el.style.maxWidth = '400px'; // Daha geniş
+    el.style.maxWidth = '400px';
     el.style.fontFamily = "'Inter', 'Arial', sans-serif";
     el.style.fontSize = '14px';
     el.style.lineHeight = '1.5';
-    el.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.4)'; // Gölge
-    el.style.border = '1px solid rgba(255, 255, 255, 0.1)'; // İnce border
+    el.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.4)';
+    el.style.border = '1px solid rgba(255, 255, 255, 0.1)';
     el.style.zIndex = '9999';
     document.body.appendChild(el);
     return el;
@@ -167,17 +170,20 @@ export class NewsPlanetManager {
       const obj = intersects[0].object;
       const { title, description, category } = obj.userData;
 
-      // 🎨 Kategori emoji'si
+      // 🎨 12 Kategori emoji'si
       const categoryEmojis = {
         gaming: '🎮',
+        esports: '🏆',
         crypto: '₿',
+        web3: '🌐',
         ai: '🤖',
         fintech: '💰',
-        esports: '🏆',
         space: '🚀',
-        community: '💬',
-        popculture: '🎬',
-        tech: '💻'
+        tech: '⚡',
+        mobile: '📱',
+        entertainment: '🎬',
+        music: '🎵',
+        coding: '💻'
       };
       
       const emoji = categoryEmojis[category] || '📰';
