@@ -1,0 +1,32 @@
+{
+  "name": "illunue",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Aztec-inspired space exploration experience with WebGL and Three.js",
+  "author": "illunue",
+  "homepage": "https://illunue.com",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "deploy": "vercel --prod"
+  },
+  "devDependencies": {
+    "terser": "^5.44.1",
+    "vite": "^6.3.0",
+    "vite-plugin-glsl": "^1.5.5"
+  },
+  "dependencies": {
+    "@types/three": "^0.175.0",
+    "gsap": "^3.12.7",
+    "lil-gui": "^0.18.2",
+    "maath": "^0.6.0",
+    "postprocessing": "^6.37.2",
+    "simplex-noise": "^2.4.0",
+    "stats.js": "^0.17.0",
+    "suncalc": "^1.9.0",
+    "three": "^0.157.0",
+    "vercel": "^41.6.1"
+  }
+}
