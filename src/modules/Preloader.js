@@ -1,144 +1,233 @@
 // src/modules/Preloader.js
+// Countdown-themed preloader with SVG logo
+
 export class Preloader {
   constructor() {
-    this.container = null;
-    this.progressBar = null;
-    this.progressText = null;
-    this.statusText = null;
-    this.percentage = 0;
-    this.isComplete = false;
+    this.container = this.createPreloaderHTML();
+    document.body.appendChild(this.container);
     
-    this.createPreloader();
+    // Fade in animation
+    requestAnimationFrame(() => {
+      this.container.style.opacity = '1';
+    });
   }
 
-  createPreloader() {
-    this.container = document.createElement('div');
-    this.container.id = 'preloader';
-    this.container.style.cssText = `
+  createPreloaderHTML() {
+    const container = document.createElement('div');
+    container.id = 'preloader';
+    container.style.cssText = `
       position: fixed;
       top: 0;
       left: 0;
-      width: 100vw;
-      height: 100vh;
+      width: 100%;
+      height: 100%;
       background: #d16c4e;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      z-index: 99999;
-      transition: opacity 0.8s ease;
+      z-index: 10000;
+      opacity: 0;
+      transition: opacity 0.4s ease;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     `;
 
-    const title = document.createElement('div');
-    title.style.cssText = `
-      color: #ffffff;
+    // ⭐ LOGO SVG (ILLUNUE text yerine)
+    const logo = document.createElement('img');
+    logo.src = '/favicons/logo.svg';
+    logo.alt = 'ILLUNUE';
+    logo.style.cssText = `
+      width: 280px;
+      height: auto;
       margin-bottom: 60px;
-      text-align: center;
       opacity: 0;
-      animation: fadeIn 1.4s ease forwards;
+      animation: fadeInLogo 0.8s ease 0.2s forwards;
     `;
-    title.innerHTML = `
-      <div style="
-        font-size: 48px;
-        font-weight: 500;
-        letter-spacing: 0.18em;
-        text-transform: uppercase;
-        margin-bottom: 12px;
-      ">ILLUNUE</div>
-      <div style="
-        font-size: 12px;
-        letter-spacing: 0.22em;
-        text-transform: uppercase;
-        opacity: 0.6;
-      ">THERE IS MORE SPACE THAN YOU THINK</div>
+
+    // Motto text
+    const motto = document.createElement('div');
+    motto.textContent = 'THERE IS MORE SPACE THAN YOU THINK';
+    motto.style.cssText = `
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 0.22em;
+      color: rgba(255, 255, 255, 0.6);
+      text-transform: uppercase;
+      margin-top: -45px;
+      margin-bottom: 60px;
+      opacity: 0;
+      animation: fadeInMotto 0.8s ease 0.4s forwards;
     `;
-    
+
+    // Progress container
     const progressContainer = document.createElement('div');
     progressContainer.style.cssText = `
       width: 400px;
       height: 2px;
-      background: rgba(255, 255, 255, 0.2);
-      position: relative;
-      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 1px;
+      overflow: hidden;
+      margin-top: 24px;
+      opacity: 0;
+      animation: fadeInProgress 0.8s ease 0.6s forwards;
     `;
 
-    this.progressBar = document.createElement('div');
-    this.progressBar.style.cssText = `
+    // Progress bar
+    const progressBar = document.createElement('div');
+    progressBar.id = 'preloader-progress-bar';
+    progressBar.style.cssText = `
       width: 0%;
       height: 100%;
       background: #ffffff;
       transition: width 0.3s ease;
+      border-radius: 1px;
     `;
 
-    progressContainer.appendChild(this.progressBar);
+    progressContainer.appendChild(progressBar);
 
-    this.progressText = document.createElement('div');
-    this.progressText.style.cssText = `
-      margin-top: 24px;
+    // Progress percentage
+    const progressPercent = document.createElement('div');
+    progressPercent.id = 'preloader-progress-percent';
+    progressPercent.textContent = '0%';
+    progressPercent.style.cssText = `
       font-size: 28px;
       font-weight: 500;
-      color: #ffffff;
-      text-align: center;
       letter-spacing: 0.08em;
+      color: #ffffff;
+      margin-top: 20px;
+      opacity: 0;
+      animation: fadeInPercent 0.8s ease 0.7s forwards;
     `;
-    this.progressText.textContent = '0%';
 
-    this.statusText = document.createElement('div');
-    this.statusText.style.cssText = `
-      margin-top: 16px;
+    // Status text
+    const status = document.createElement('div');
+    status.id = 'preloader-status';
+    status.textContent = 'INITIALIZING...';
+    status.style.cssText = `
       font-size: 11px;
-      color: rgba(255, 255, 255, 0.6);
-      text-align: center;
-      text-transform: uppercase;
+      font-weight: 400;
       letter-spacing: 0.18em;
-      min-height: 20px;
+      color: rgba(255, 255, 255, 0.5);
+      margin-top: 16px;
+      text-transform: uppercase;
+      opacity: 0;
+      animation: fadeInStatus 0.8s ease 0.8s forwards;
     `;
-    this.statusText.textContent = 'INITIALIZING...';
 
+    // ⭐ CSS Animations
     const style = document.createElement('style');
     style.textContent = `
-      @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(6px); }
-        to { opacity: 1; transform: translateY(0); }
+      @keyframes fadeInLogo {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fadeInMotto {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 0.6;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fadeInProgress {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+
+      @keyframes fadeInPercent {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fadeInStatus {
+        from {
+          opacity: 0;
+          transform: translateY(5px);
+        }
+        to {
+          opacity: 0.5;
+          transform: translateY(0);
+        }
+      }
+
+      /* ⭐ Responsive - Logo boyutu */
+      @media (max-width: 768px) {
+        #preloader img {
+          width: 220px !important;
+          margin-bottom: 50px !important;
+        }
+        
+        #preloader-progress-percent {
+          font-size: 24px !important;
+        }
+      }
+
+      @media (max-width: 480px) {
+        #preloader img {
+          width: 180px !important;
+          margin-bottom: 40px !important;
+        }
       }
     `;
+
     document.head.appendChild(style);
 
-    this.container.appendChild(title);
-    this.container.appendChild(progressContainer);
-    this.container.appendChild(this.progressText);
-    this.container.appendChild(this.statusText);
-    document.body.appendChild(this.container);
+    // Append all elements
+    container.appendChild(logo);
+    container.appendChild(motto);
+    container.appendChild(progressContainer);
+    container.appendChild(progressPercent);
+    container.appendChild(status);
+
+    return container;
   }
 
   updateProgress(loaded, total) {
-    if (total === 0) return;
+    const percent = Math.round((loaded / total) * 100);
     
-    const percentage = Math.floor((loaded / total) * 100);
-    this.percentage = percentage;
+    const progressBar = document.getElementById('preloader-progress-bar');
+    const progressPercent = document.getElementById('preloader-progress-percent');
     
-    this.progressBar.style.width = `${percentage}%`;
-    this.progressText.textContent = `${percentage}%`;
+    if (progressBar) {
+      progressBar.style.width = `${percent}%`;
+    }
+    
+    if (progressPercent) {
+      progressPercent.textContent = `${percent}%`;
+    }
   }
 
   updateStatus(message) {
-    if (this.statusText) {
-      this.statusText.textContent = message;
+    const status = document.getElementById('preloader-status');
+    if (status) {
+      status.textContent = message.toUpperCase();
     }
   }
 
   complete() {
-    if (this.isComplete) return;
-    this.isComplete = true;
-
-    this.progressBar.style.width = '100%';
-    this.progressText.textContent = '100%';
-    this.statusText.textContent = 'READY TO EXPLORE';
-
+    this.updateStatus('READY TO EXPLORE');
+    
+    // Wait a bit before fading out
     setTimeout(() => {
       this.container.style.opacity = '0';
       
+      // Remove from DOM after fade out
       setTimeout(() => {
         if (this.container && this.container.parentNode) {
           this.container.parentNode.removeChild(this.container);
