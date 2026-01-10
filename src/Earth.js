@@ -1,15 +1,19 @@
 // Earth.js - İki Katmanlı Sistem: Yüzey + Ayrı Bulut Katmanı
+// ⭐ LoadingManager desteği eklendi
 import * as THREE from 'three';
 
 export class Earth {
-  constructor(position, sunDirectionFn, renderer, scene, cloudConfig = {}) {
+  constructor(position, sunDirectionFn, renderer, scene, loadingManager = null, cloudConfig = {}) {
     // ========================================
     // 🌍 ANA DÜNYA GEOMETRİSİ
     // ========================================
     const earthGeometry = new THREE.SphereGeometry(5, 64, 64);
     earthGeometry.computeTangents();
 
-    const textureLoader = new THREE.TextureLoader();
+    // ⭐ LoadingManager ile TextureLoader
+    const textureLoader = loadingManager 
+      ? new THREE.TextureLoader(loadingManager)
+      : new THREE.TextureLoader();
 
     const loadTexture = (url) => {
       const texture = textureLoader.load(url, undefined, undefined, (err) => {
@@ -136,11 +140,9 @@ export class Earth {
         finalColor = mix(finalColor, odinResult, odinFactor);
         float finalAlpha = mix(1.0, alphaMask, odinFactor);
         
-        
         // ✨ BLOOM - Sadece aydınlık bölgeye (gündüz tarafı)
-        // nDotL > 0.2 olan yerler (gün ışığı alan bölgeler) bloom alacak
-        float bloomIntensity = smoothstep(0.1, 0.5, nDotL);  // Yumuşak geçiş
-        vec3 bloomColor = finalColor * bloomIntensity * 0.3;  // 0.3 = bloom gücü (ayarlanabilir)
+        float bloomIntensity = smoothstep(0.1, 0.5, nDotL);
+        vec3 bloomColor = finalColor * bloomIntensity * 0.3;
         
         // Odin mode'da bloom kapalı
         bloomColor *= (1.0 - odinFactor);
@@ -281,11 +283,11 @@ export class Earth {
         // ========================================
         vec2 baseFlow = vUv + (cloudDirection * time * cloudSpeed * 0.005);
         
-        float distortion1 = fbm(vUv * cloudDetailScale + time * 0.008);  // 3x daha yavaş
-        float distortion2 = fbm(vUv * cloudDetailScale * 0.5 - time * 0.005);  // 3x daha yavaş
+        float distortion1 = fbm(vUv * cloudDetailScale + time * 0.008);
+        float distortion2 = fbm(vUv * cloudDetailScale * 0.5 - time * 0.005);
         vec2 distortionOffset = vec2(distortion1, distortion2) * cloudDistortion;
         
-        float turbulenceValue = turbulence(vUv * cloudDetailScale * 2.0 + time * 0.012);  // 3x daha yavaş
+        float turbulenceValue = turbulence(vUv * cloudDetailScale * 2.0 + time * 0.012);
         vec2 turbulenceOffset = vec2(
           sin(turbulenceValue * 3.14159),
           cos(turbulenceValue * 3.14159)
@@ -295,10 +297,10 @@ export class Earth {
         vec4 cloudSample = texture2D(cloudTexture, fract(cloudUV));
         
         float proceduralDetail = fbm(cloudUV * cloudDetailScale * 3.0);
-        cloudSample.rgb = mix(cloudSample.rgb, vec3(proceduralDetail), 0.12);  // Daha az detay
+        cloudSample.rgb = mix(cloudSample.rgb, vec3(proceduralDetail), 0.12);
         
         float cloudDensity = dot(cloudSample.rgb, vec3(0.299, 0.587, 0.114));
-        float cloudAlpha = smoothstep(0.40, 0.80, cloudDensity);  // Daha yüksek threshold = daha az bulut
+        float cloudAlpha = smoothstep(0.40, 0.80, cloudDensity);
         
         // ☀️ Bulut rengi - parlak beyaz
         float cloudBrightness = 0.85 + nDotL * 0.15;
@@ -308,9 +310,7 @@ export class Earth {
         float cloudShadow = smoothstep(0.0, 0.2, nDotL);
         cloudColor *= (0.7 + cloudShadow * 0.3);
         
-        // ✅ Atmosfer efekti KALDIRILDI - artık kameraya bağlı değil
-        
-        // Gece tarafında bulutlar kaybolsun (sadece güneş ışığına bağlı)
+        // Gece tarafında bulutlar kaybolsun
         float dayNightMix = smoothstep(0.0, 0.3, nDotL);
         
         // ========================================

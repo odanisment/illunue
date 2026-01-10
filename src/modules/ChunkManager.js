@@ -1,4 +1,4 @@
-// modules/ChunkManager.js - UPDATED WITH COSMIC OBJECTS (No Big Bang)
+// modules/ChunkManager.js - UPDATED WITH COSMIC OBJECTS + LOADING MANAGER
 import * as THREE from 'three';
 import { PhysicalStarField } from './PhysicalStarField.js';
 import { createAudioPlanet } from './AudioPlanet.js';
@@ -6,7 +6,7 @@ import { CosmicObjectsManager } from './CosmicObjectsManager.js';
 import { SOLAR_SYSTEM_OFFSET } from '../solarSystemConfig.js';
 
 export class ChunkManager {
-  constructor(scene, camera) {
+  constructor(scene, camera, loadingManager = null) {
     this.scene = scene;
     this.camera = camera;
 
@@ -17,10 +17,17 @@ export class ChunkManager {
     this.chunks = new Map();
     this.chunkPool = [];
 
-    // Audio system
-    this.audioLoader = new THREE.AudioLoader();
+    // ⭐ Audio system - LoadingManager ile
+    this.audioLoader = loadingManager 
+      ? new THREE.AudioLoader(loadingManager)
+      : new THREE.AudioLoader();
+    
     this.audioListener = camera.userData.audioListener;
-    this.textureLoader = new THREE.TextureLoader();
+    
+    // ⭐ Texture loader - LoadingManager ile
+    this.textureLoader = loadingManager
+      ? new THREE.TextureLoader(loadingManager)
+      : new THREE.TextureLoader();
 
     // Audio planet positions
     this.audioPlanetPositions = this._generateRandomAudioPlanetPositions();

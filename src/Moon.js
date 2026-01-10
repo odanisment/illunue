@@ -1,13 +1,17 @@
 // Moon.js - Belirgin Ay Fazı ile Güncellenmiş
+// ⭐ LoadingManager desteği eklendi
 import * as THREE from 'three';
 import * as SunCalc from 'suncalc';
 
 export class Moon {
-  constructor(position, sunDirectionFn, renderer, scene) {
+  constructor(position, sunDirectionFn, renderer, scene, loadingManager = null) {
     const geometry = new THREE.SphereGeometry(1, 64, 64);
     geometry.computeTangents();
 
-    const textureLoader = new THREE.TextureLoader();
+    // ⭐ LoadingManager ile TextureLoader
+    const textureLoader = loadingManager
+      ? new THREE.TextureLoader(loadingManager)
+      : new THREE.TextureLoader();
 
     const loadTexture = (url) =>
       textureLoader.load(url, undefined, undefined, (err) => {
@@ -92,7 +96,7 @@ export class Moon {
         float phaseFactor = pow(nDotL, phaseSharpness) * moonIllumination;
         
         // Daha aydınlık ambient
-        float ambientMoon = 0.2; // Arttırıldı (0.01'den 0.05'e)
+        float ambientMoon = 0.2; // Artırıldı (0.01'den 0.05'e)
         vec3 ambient = texColor.rgb * ambientMoon;
         vec3 lit = texColor.rgb * phaseFactor * 1.3; // %30 daha parlak
         
