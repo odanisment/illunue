@@ -1,5 +1,5 @@
 // src/modules/Preloader.js
-// Countdown-themed preloader with SVG logo
+// Countdown-themed preloader with SVG logo and balanced spacing
 
 export class Preloader {
   constructor() {
@@ -32,14 +32,14 @@ export class Preloader {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     `;
 
-    // ⭐ LOGO SVG (ILLUNUE text yerine)
+    // ⭐ LOGO SVG
     const logo = document.createElement('img');
     logo.src = '/favicons/logo.svg';
     logo.alt = 'ILLUNUE';
     logo.style.cssText = `
       width: 280px;
       height: auto;
-      margin-bottom: 60px;
+      margin-bottom: 40px;
       opacity: 0;
       animation: fadeInLogo 0.8s ease 0.2s forwards;
     `;
@@ -53,8 +53,8 @@ export class Preloader {
       letter-spacing: 0.22em;
       color: rgba(255, 255, 255, 0.6);
       text-transform: uppercase;
-      margin-top: -45px;
-      margin-bottom: 60px;
+      margin-top: -30px;
+      margin-bottom: 40px;
       opacity: 0;
       animation: fadeInMotto 0.8s ease 0.4s forwards;
     `;
@@ -67,7 +67,7 @@ export class Preloader {
       background: rgba(255, 255, 255, 0.15);
       border-radius: 1px;
       overflow: hidden;
-      margin-top: 24px;
+      margin-top: 16px;
       opacity: 0;
       animation: fadeInProgress 0.8s ease 0.6s forwards;
     `;
@@ -94,7 +94,7 @@ export class Preloader {
       font-weight: 500;
       letter-spacing: 0.08em;
       color: #ffffff;
-      margin-top: 20px;
+      margin-top: 16px;
       opacity: 0;
       animation: fadeInPercent 0.8s ease 0.7s forwards;
     `;
@@ -108,7 +108,7 @@ export class Preloader {
       font-weight: 400;
       letter-spacing: 0.18em;
       color: rgba(255, 255, 255, 0.5);
-      margin-top: 16px;
+      margin-top: 12px;
       text-transform: uppercase;
       opacity: 0;
       animation: fadeInStatus 0.8s ease 0.8s forwards;
@@ -166,11 +166,16 @@ export class Preloader {
         }
       }
 
-      /* ⭐ Responsive - Logo boyutu */
+      /* ⭐ Responsive - Logo boyutu ve spacing */
       @media (max-width: 768px) {
         #preloader img {
           width: 220px !important;
-          margin-bottom: 50px !important;
+          margin-bottom: 32px !important;
+        }
+        
+        #preloader > div:nth-child(2) {
+          margin-bottom: 32px !important;
+          margin-top: -24px !important;
         }
         
         #preloader-progress-percent {
@@ -181,7 +186,16 @@ export class Preloader {
       @media (max-width: 480px) {
         #preloader img {
           width: 180px !important;
-          margin-bottom: 40px !important;
+          margin-bottom: 28px !important;
+        }
+        
+        #preloader > div:nth-child(2) {
+          margin-bottom: 28px !important;
+          margin-top: -20px !important;
+        }
+        
+        #preloader-progress-percent {
+          font-size: 22px !important;
         }
       }
     `;
